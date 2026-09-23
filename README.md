@@ -535,13 +535,13 @@ Developed as a collaborative software / hackathon project.
 
 ### Team
 
-| Member        | Role |
-| ------------- | ---- |
-| Team Member 1 | —    |
-| Team Member 2 | —    |
-| Team Member 3 | —    |
-| Team Member 4 | —    |
-| Team Member 5 | —    |
+| Member                    | Role |
+| -------------             | ---- |
+| Amjuri Jay raj            |  Backend/API Developer           |
+| Siddabattula Sai Sahasra  |  Integration, Testing & DevOps   |
+| Sambangi chinmai          |  Frontend Developer              |
+| Nelli Sravanthi           |  Database                        |
+
 
 > Update the table with your team members and their responsibilities.
 
