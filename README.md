@@ -547,14 +547,6 @@ Developed as a collaborative software / hackathon project.
 
 ---
 
-# 📄 License
-
-This project currently does not specify an open-source license.
-
-If the project is intended for public distribution or reuse, an appropriate license can be added.
-
----
-
 # 🔗 Repository
 
 **GitHub:**
