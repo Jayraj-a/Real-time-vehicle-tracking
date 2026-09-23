@@ -1,0 +1,151 @@
+import { useEffect, useState } from 'react'
+import { getAlerts } from '../api/api'
+
+function Alerts() {
+  const [alerts, setAlerts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  const loadAlerts = async () => {
+    try {
+      const response = await getAlerts()
+      setAlerts(response.data)
+      setError('')
+    } catch (error) {
+      console.error(error)
+      setError('Unable to load alerts.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadAlerts()
+
+    const socket = new WebSocket(
+      'ws://127.0.0.1:8001/ws'
+    )
+
+    socket.onmessage = () => {
+      loadAlerts()
+    }
+
+    return () => {
+      socket.close()
+    }
+  }, [])
+
+  return (
+    <main className="dashboard">
+      <div className="dashboard-top">
+        <h1>Alerts</h1>
+        <p>
+          Monitor fleet warnings and violations.
+        </p>
+      </div>
+
+      <div className="active-card">
+        <div className="card-header">
+          <div>
+            <h2>Fleet Alerts</h2>
+            <p>{alerts.length} alert(s)</p>
+          </div>
+        </div>
+
+        {loading && (
+          <div className="page-message">
+            Loading alerts...
+          </div>
+        )}
+
+        {error && (
+          <div className="page-message">
+            {error}
+          </div>
+        )}
+
+        {!loading &&
+          !error &&
+          alerts.length === 0 && (
+            <div className="page-message">
+              No alerts found.
+            </div>
+          )}
+
+        {!loading &&
+          !error &&
+          alerts.length > 0 && (
+            <div className="table-wrapper">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Vehicle</th>
+                    <th>Type</th>
+                    <th>Message</th>
+                    <th>Speed</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {alerts.map((alert) => (
+                    <tr key={alert.id}>
+                      <td>{alert.id}</td>
+
+                      <td>
+                        {alert.vehicle_id ??
+                          '-'}
+                      </td>
+
+                      <td>
+                        {alert.alert_type ??
+                          alert.type ??
+                          'Alert'}
+                      </td>
+
+                      <td>
+                        {alert.message ??
+                          '-'}
+                      </td>
+
+                      <td>
+                        {alert.speed != null
+                          ? `${alert.speed} km/h`
+                          : '-'}
+                      </td>
+
+                      <td>
+                        <span
+                          className={`status-badge ${
+                            alert.is_resolved
+                              ? 'moving'
+                              : 'offline'
+                          }`}
+                        >
+                          {alert.is_resolved
+                            ? 'Resolved'
+                            : 'Active'}
+                        </span>
+                      </td>
+
+                      <td>
+                        {alert.created_at
+                          ? new Date(
+                              alert.created_at
+                            ).toLocaleString()
+                          : '-'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+      </div>
+    </main>
+  )
+}
+
+export default Alerts
